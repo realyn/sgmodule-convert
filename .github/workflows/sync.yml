@@ -1,0 +1,33 @@
+name: Sync Scripts
+
+on:
+  schedule:
+    - cron: '0 */12 * * *'  # 每12小时运行一次
+  workflow_dispatch:  # 允许手动触发
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v2
+      
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: '3.x'
+        
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install requests
+        
+    - name: Run sync script
+      run: python sync.py
+        
+    - name: Commit and push if changed
+      run: |
+        git config --global user.name 'GitHub Action'
+        git config --global user.email 'action@github.com'
+        git add -A
+        git diff --quiet && git diff --staged --quiet || (git commit -m "Update scripts - $(date)"; git push)
