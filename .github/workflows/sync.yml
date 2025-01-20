@@ -1,8 +1,7 @@
 name: Sync Scripts
-
 on:
   schedule:
-    - cron: '0 */12 * * *'
+    - cron: '0 */12 * * *'  # 修正 cron 表达式
   workflow_dispatch:
 
 jobs:
@@ -12,7 +11,7 @@ jobs:
     steps:
     - uses: actions/checkout@v2
       with:
-        token: ${{ secrets.GITHUB_TOKEN }}  # 使用配置的 token
+        token: ${{ secrets.YN_TOKEN_4_LOON_CONVERT }}  # 使用相同的 token
         
     - name: Set up Python
       uses: actions/setup-python@v2
@@ -28,10 +27,11 @@ jobs:
       run: python sync.py
         
     - name: Commit and push if changed
+      env:
+        GITHUB_TOKEN: ${{ secrets.YN_TOKEN_4_LOON_CONVERT }}
       run: |
         git config --global user.name 'GitHub Action'
         git config --global user.email 'action@github.com'
+        git remote set-url origin https://x-access-token:${GITHUB_TOKEN}@github.com/${{ github.repository }}
         git add -A
-        git diff --quiet && git diff --staged --quiet || (git commit -m "Update scripts - $(date)"; git push)
-      env:
-        GITHUB_TOKEN: ${{ secrets.YN_TOKEN_4_LOON_CONVERT }}
+        git diff --quiet && git diff --staged --quiet || (git commit -m "Update scripts - $(date)" && git push)
