@@ -2,8 +2,8 @@ name: Sync Scripts
 
 on:
   schedule:
-    - cron: '0 */12 * * *'  # 每12小时运行一次
-  workflow_dispatch:  # 允许手动触发
+    - cron: '0 */12 * * *'
+  workflow_dispatch:
 
 jobs:
   sync:
@@ -11,7 +11,9 @@ jobs:
     
     steps:
     - uses: actions/checkout@v2
-      
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}  # 使用配置的 token
+        
     - name: Set up Python
       uses: actions/setup-python@v2
       with:
@@ -31,3 +33,5 @@ jobs:
         git config --global user.email 'action@github.com'
         git add -A
         git diff --quiet && git diff --staged --quiet || (git commit -m "Update scripts - $(date)"; git push)
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
