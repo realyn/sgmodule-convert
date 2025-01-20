@@ -8,7 +8,7 @@
 - 喜马拉雅去广告
 
 ## 更新时间
-请查看 `scripts/update_time.txt`
+请查看 `loon-plugin/update_time.txt`
 
 ## 自动更新
 - 每12小时自动同步一次
